@@ -65,15 +65,17 @@ print("Heridos")
 Heridos=np.array(dataframe.Number_of_Casualties.values)
 print(Heridos)
 
+mediaSeveridad=0
+varianzaSeveridad=0
 severidadNormal=[]
 print("procesando severidad")
 severidad=np.array(dataframe.Accident_Severity.values)
-media=np.mean(severidad)
-varianza=np.std(severidad)
+mediaSeveridad=np.mean(severidad)
+varianzaSeveridad=np.std(severidad)
 print("media")
-print(media)
+print(mediaSeveridad)
 print("varianza")
-print(varianza)
+print(varianzaSeveridad)
 severidad=severidad.reshape(-1, 1)
 scaler = preprocessing.StandardScaler().fit(severidad)
 X_scaled = scaler.transform(severidad)
@@ -85,15 +87,18 @@ print(severidadNormal)
 #print(X_scaled.mean(axis=0))
 #print(X_scaled.std(axis=0))
 
+
+mediaVehiculos=0
+varianzaVehiculos=0
 vehiculosNormal=[]
 print("procesando Num de vehiculos")
 vehiculos=np.array(dataframe.Number_of_Vehicles.values)
-media=np.mean(vehiculos)
-varianza=np.std(vehiculos)
+mediaVehiculos=np.mean(vehiculos)
+varianzaVehiculos=np.std(vehiculos)
 print("media")
-print(media)
+print(mediaVehiculos)
 print("varianza")
-print(varianza)
+print(varianzaVehiculos)
 vehiculos=vehiculos.reshape(-1, 1)
 scaler = preprocessing.StandardScaler().fit(vehiculos)
 X_scaled = scaler.transform(vehiculos)
@@ -118,6 +123,9 @@ print(dia)
 #print(X_scaled.mean(axis=0))
 #print(X_scaled.std(axis=0))
 
+
+mediaTiempo=0
+varianzaTiempo=0
 print("procesando tiempo")
 #print("hora")
 #print(dataframe.Time.values)
@@ -138,12 +146,12 @@ for i in range(len(dataframe.Time.values)):
 #print("hora nueva")
 #print(len(tiempo))
 tiempo=np.array(tiempo)
-media=np.mean(tiempo)
-varianza=np.std(tiempo)
+mediaTiempo=np.mean(tiempo)
+varianzaTiempo=np.std(tiempo)
 print("media")
-print(media)
+print(mediaTiempo)
 print("varianza")
-print(varianza)
+print(varianzaTiempo)
 tiempo=tiempo.reshape(-1, 1)
 scaler = preprocessing.StandardScaler().fit(tiempo)
 X_scaled = scaler.transform(tiempo)
@@ -172,15 +180,18 @@ calleT = np.where(calleT == 'Slip road', 5, calleT)
 print(calleT)
 
 
+
+mediaVelocidad=0
+varianzaVelocidad=0
 print("procesando limite de velocidad")
 velocidadNormal=[]
 velocidad=np.array(dataframe.Speed_limit.values)
-media=np.mean(velocidad)
-varianza=np.std(velocidad)
+mediaVelocidad=np.mean(velocidad)
+varianzaVelocidad=np.std(velocidad)
 print("media")
-print(media)
+print(mediaVelocidad)
 print("varianza")
-print(varianza)
+print(varianzaVelocidad)
 velocidad=velocidad.reshape(-1, 1)
 scaler = preprocessing.StandardScaler().fit(velocidad)
 X_scaled = scaler.transform(velocidad)
@@ -248,4 +259,21 @@ print(calleE)
 
 
 
+dfSave=pd.DataFrame({"Severidad":severidadNormal,"Vehiculos":vehiculosNormal,"Dia":dia,
+	"Hora":tiempoNormal,"TipoCalle":calleT,"Velocidad":velocidadNormal,"Iluminacion":luz,
+	"Clima":clima,"CalleEstado":calleE,"Policias":Policias,"Heridos":Heridos})
+print(dfSave)
 
+
+dfSave.to_csv('DatosProcesados.csv', index=True)
+
+
+
+dfSave2=pd.DataFrame({"mediaSeveridad":[mediaSeveridad],"varianzaSeveridad":[varianzaSeveridad],
+	"mediaVehiculos":[mediaVehiculos],"varianzaVehiculos":[varianzaVehiculos],
+	"mediaTiempo":[mediaTiempo],"varianzaTiempo":[varianzaTiempo],
+	"mediaVelocidad":[mediaVelocidad],"varianzaVelocidad":[varianzaVelocidad]})
+print(dfSave2)
+
+
+dfSave2.to_csv('Estadisticas.csv', index=False)
