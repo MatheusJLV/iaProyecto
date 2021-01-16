@@ -265,7 +265,7 @@ dfSave=pd.DataFrame({"Severidad":severidadNormal,"Vehiculos":vehiculosNormal,"Di
 print(dfSave)
 
 
-dfSave.to_csv('DatosProcesados.csv', index=True)
+dfSave.to_csv('DatosProcesados.csv', index=False)
 
 
 
