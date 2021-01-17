@@ -43,10 +43,10 @@ subset=dataframe[["Dia","TipoCalle","Iluminacion","Clima","CalleEstado"]]
 valores=np.array(subset.values)
 #print(valores)
 
-diasCate = [1,2,3,4,5,6,7]
+diasCate = [1,2]
 TipoCalleCate = [1,2,3,4,5]
-IluminacionCate = [1,2,3,4,5]
-ClimaCate =[0,1,2,3,4,5,6,7]
+IluminacionCate = [1,2,3,4]
+ClimaCate =[0,1,2,3,4]
 CalleEstadoCate=[0,1,2,3,4]
 
 enc = preprocessing.OneHotEncoder(categories=[diasCate, TipoCalleCate, IluminacionCate,ClimaCate,CalleEstadoCate])
@@ -56,16 +56,15 @@ arreglo=enc.transform(valores).toarray()
 #print(arreglo)
 
 
-OHE=pd.DataFrame({'Doming': arreglo[:, 0], 'Lunes': arreglo[:, 1],"Martes": arreglo[:, 2],
-	"Miercoles": arreglo[:, 3],"Jueves": arreglo[:, 4],"Viernes": arreglo[:, 5],
-	"Sabado": arreglo[:, 6],"Autopista": arreglo[:, 7],"AutopistaDoble": arreglo[:, 8],
-	"1Via": arreglo[:, 9],"Redondel": arreglo[:, 10],"Entrada": arreglo[:, 11],
-	"LuzDia": arreglo[:, 12],"LuzNoche": arreglo[:, 13],"LuzDesconocida": arreglo[:, 14],
-	"LuzApagada": arreglo[:, 15],"NoLuz": arreglo[:, 16],"Otro": arreglo[:, 17],
-	"Despejado": arreglo[:, 18],"DespejadoViento": arreglo[:, 19],"Lluvia": arreglo[:, 20],
-	"LluviaViento": arreglo[:, 21],"Nieve": arreglo[:, 22],"NieveViento": arreglo[:, 23],
-	"Neblina": arreglo[:, 24],"Seca": arreglo[:, 25],"Inyndada": arreglo[:, 26],
-	"Humeda": arreglo[:, 27],"Nieve": arreglo[:, 28],"Congelada": arreglo[:, 29]})
+OHE=pd.DataFrame({'DiaFinde': arreglo[:, 0], 'DiaLaboral': arreglo[:, 1],"Autopista": arreglo[:, 2],
+	"AutopistaDoble": arreglo[:, 3],
+	"1Via": arreglo[:, 4],"Redondel": arreglo[:, 5],"Entrada": arreglo[:, 6],
+	"LuzDia": arreglo[:, 7],"LuzNoche": arreglo[:, 8],"LuzDesconocida": arreglo[:, 9],
+	"LuzApagada": arreglo[:, 10],"Otro": arreglo[:, 11],
+	"Despejado": arreglo[:, 12],"Lluvia": arreglo[:, 13],
+	"Nieve": arreglo[:, 14],
+	"Neblina": arreglo[:, 15],"Seca": arreglo[:, 16],"Inundada": arreglo[:, 17],
+	"Humeda": arreglo[:, 18],"Nieve": arreglo[:, 19],"Congelada": arreglo[:, 20]})
 #print(OHE)
 dataframe.drop('Dia', inplace=True, axis=1)
 dataframe.drop('TipoCalle', inplace=True, axis=1)
