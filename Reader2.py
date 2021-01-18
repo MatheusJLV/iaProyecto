@@ -172,6 +172,7 @@ alpha=0.005
 for i in range(35000):
 	print(i)
 	print(pesos)
+	totales=np.zeros(features)
 	for j in range(mbatch):		
 		datoxpeso=np.multiply(datos[contador:contador+1,0:features][0],pesos)
 		#print("multiplicar")
