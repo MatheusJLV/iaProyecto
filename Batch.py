@@ -3,19 +3,24 @@ import numpy as np
 import pandas as pd
 import time
 from sklearn import preprocessing
+import numpy as np
+
+
+import csv
+import numpy as np
+import pandas as pd
+import time
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
+from sklearn.feature_selection import f_regression, SelectKBest
 # example of correlation feature selection for numerical data
 from sklearn.datasets import make_regression
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_regression
-
-import matplotlib.pyplot as plt
-import scipy.linalg
-from sklearn.preprocessing import MinMaxScaler
-
 
 print("Pandas Read")
 dataframe=pd.read_csv('DatosProcesados.csv',dtype={"Severidad":float,"Vehiculos":float,"Dia":int,
@@ -27,16 +32,8 @@ estadisticas=pd.read_csv('Estadisticas.csv',dtype={"mediaSeveridad":float,"varia
 	"mediaTiempo":float,"varianzaTiempo":float,
 	"mediaVelocidad":float,"varianzaVelocidad":float})
 
-print(dataframe)
-print(estadisticas)
-
-print("verificando nombres y valores unicos")
-for col in dataframe.columns:
-	print(col)
-	print(dataframe[col].unique())
-
-
-
+#print(dataframe)
+#print(estadisticas)
 
 #print("verificando nombres y valores unicos")
 #for col in dataframe.columns:
@@ -61,11 +58,7 @@ CalleEstado=np.array(dataframe.CalleEstado.values)
 subset=dataframe[["Dia","TipoCalle","Iluminacion","Clima","CalleEstado"]]
 #print(subset)
 valores=np.array(subset.values)
-print(valores)
-
-
-
-
+#print(valores)
 
 diasCate = [1,2]
 TipoCalleCate = [1,2,3,4,5]
@@ -79,6 +72,7 @@ fit=enc.fit(valores)
 arreglo=enc.transform(valores).toarray()
 #print(arreglo)
 
+
 OHE=pd.DataFrame({'DiaFinde': arreglo[:, 0], 'DiaLaboral': arreglo[:, 1],"Autopista": arreglo[:, 2],
 	"AutopistaDoble": arreglo[:, 3],
 	"1Via": arreglo[:, 4],"Redondel": arreglo[:, 5],"Entrada": arreglo[:, 6],
@@ -88,15 +82,12 @@ OHE=pd.DataFrame({'DiaFinde': arreglo[:, 0], 'DiaLaboral': arreglo[:, 1],"Autopi
 	"Nieve": arreglo[:, 14],
 	"Neblina": arreglo[:, 15],"Seca": arreglo[:, 16],"Inundada": arreglo[:, 17],
 	"Humeda": arreglo[:, 18],"Nieve": arreglo[:, 19],"Congelada": arreglo[:, 20]})
-print(OHE)
-dataframe.drop('Dia', inplace=True, axis=1)
-dataframe.drop('TipoCalle', inplace=True, axis=1)
-dataframe.drop('Iluminacion', inplace=True, axis=1)
+#print(OHE)
+#dataframe.drop('Dia', inplace=True, axis=1)
+#dataframe.drop('TipoCalle', inplace=True, axis=1)
+#dataframe.drop('Iluminacion', inplace=True, axis=1)
 dataframe.drop('Clima', inplace=True, axis=1)
-dataframe.drop('CalleEstado', inplace=True, axis=1)
-
-
-
+#dataframe.drop('CalleEstado', inplace=True, axis=1)
 
 #DATOS PARA USAR
 #en pandas
@@ -106,14 +97,18 @@ nuevodfnp=np.array(nuevodfpd.values)
 #DATOS PARA USAR
 
 
-print("Datos")
-print(nuevodfpd)
+#print("Datos")
+#print(nuevodfpd)
 #print(nuevodfnp[0])
 
-print("verificando nombres y valores unicos")
-for col in nuevodfpd.columns:
-	print(col)
+#print("verificando nombres y valores unicos")
+#I=0
+#for col in nuevodfpd.columns:
+#	I=I+1
+#	print(I)
+#	print(col)
 #	print(nuevodfpd[col].unique())
+
 
 #DATOS PARA USAR
 mediaSeveridad=estadisticas["mediaSeveridad"].values[0]
@@ -139,30 +134,97 @@ print(varianzaVelocidad)
 
 
 
-#data = pd.read_csv("data.csv")
-data=nuevodfpd
-#X = data.iloc[:,0:2].values
-#Y = data.iloc[:,4:5].values
-X = data.iloc[1:10,17:23].values
-Y = data.iloc[1:10,25:26].values
+dataframered=nuevodfpd[["Vehiculos","TipoCalle","Iluminacion","Velocidad","CalleEstado","Policias"]]
+data=dataframered
 
-#scale = StandardScaler()
-#X = scale.fit_transform(X)
+X = data.iloc[:,0:5].values
+Y = data.iloc[:,5:6].values
+#print(X)
+#print(Y)
 
 X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size=.2, random_state = 0)
 
-poly = PolynomialFeatures(degree = 3)
+
+grado=3
+
+poly = PolynomialFeatures(degree = grado)
 x_poly = poly.fit_transform(X_train)
+
+features=1+5*grado
+x_poly=x_poly[:,0:features]
+print("x_poly")
 print(x_poly)
-poly.fit(X_train,Y_train)
+#print(x_poly[0:1,:])
+print(x_poly.shape)
+print(x_poly.shape[0])
 
-model = LinearRegression()
-model.fit(x_poly, Y_train,batch_size=10)
-print(model)
+datos=x_poly
+#print(datos[0])
 
-y_pred = model.predict(poly.fit_transform(X_test))
-print(y_pred)
+mbatch=32
+limite=np.full((features),6)
+pesos=np.random.randint(1,limite)
+totales=np.zeros(features)
+
+alpha=0.005
+#print(datos[0:1,0:5][0])
+#print(pesos)
+for g in range(10):
+	contador=0
+	for i in range(28000):
+		print(i)
+		print(pesos)
+		totales=np.zeros(features)
+		for j in range(mbatch):		
+			datoxpeso=np.multiply(datos[contador:contador+1,0:features][0],pesos)
+			#print("multiplicar")
+			#print(datos[contador:contador+1,0:features][0])
+			#print(pesos)
+			#print(datoxpeso)
+			esperado=np.full((features),Y[contador])
+			#print("esperado")
+			#print(esperado)
+			datodesper=np.subtract(datoxpeso,esperado)
+			#print("resta")
+			#print(datoxpeso)
+			#print(esperado)
+			#print(np.subtract(datoxpeso,esperado))
+			datoxder=np.multiply(datodesper,datos[contador:contador+1,0:features][0])
+			#print("resta")
+			#print(datodesper)
+			#print(datos[contador:contador+1,0:features][0])
+			#print(np.multiply(datodesper,datos[contador:contador+1,0:features][0]))
+			totales=np.add(totales,datoxder)
+			#print("totales")
+			#print(totales)
+			contador=contador+1
+		pesos=np.subtract(pesos,alpha/mbatch*totales)
+		print(pesos)
 
 
+newValue= X_test
+poly2 = PolynomialFeatures(degree = grado)
+x_poly2 = poly2.fit_transform(newValue)
+#print(x_poly2[:,0:features])
+acumulado=0
 
+for i in range(7000):
+	
+	#print(i)
+	res=np.sum((np.multiply(x_poly2[i:i+1,0:features],pesos)))
 
+	resAct= Y_test[0]
+	dif=pow(res-resAct,2)
+	acumulado=acumulado+dif
+	if i < 10:
+		print("actual ")
+		print(resAct)
+		print("Predicho")
+		print(res)	
+	"""print("actual ")
+				print(resAct)
+				print("Predicho")
+				print(res)"""
+
+final=acumulado/7000
+print(final)
