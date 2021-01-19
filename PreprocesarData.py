@@ -266,8 +266,8 @@ print(calleE)
 
 
 
-dfSave=pd.DataFrame({"Severidad":severidadNormal,"Vehiculos":vehiculosNormal,"Dia":dia,
-	"Hora":tiempoNormal,"TipoCalle":calleT,"Velocidad":velocidadNormal,"Iluminacion":luz,
+dfSave=pd.DataFrame({"Severidad":severidad,"Vehiculos":vehiculos,"Dia":dia,
+	"Hora":tiempo,"TipoCalle":calleT,"Velocidad":velocidad,"Iluminacion":luz,
 	"Clima":clima,"CalleEstado":calleE,"Policias":Policias,"Heridos":Heridos})
 print(dfSave)
 

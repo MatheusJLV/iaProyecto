@@ -169,7 +169,7 @@ contador=0
 alpha=0.005
 #print(datos[0:1,0:5][0])
 #print(pesos)
-for i in range(35000):
+for i in range(28000):
 	print(i)
 	print(pesos)
 	totales=np.zeros(features)
@@ -179,7 +179,7 @@ for i in range(35000):
 		#print(datos[contador:contador+1,0:features][0])
 		#print(pesos)
 		#print(datoxpeso)
-		esperado=np.full((features),datos[contador:contador+1,features-1:features][0])
+		esperado=np.full((features),Y[contador])
 		#print("esperado")
 		#print(esperado)
 		datodesper=np.subtract(datoxpeso,esperado)
@@ -199,3 +199,30 @@ for i in range(35000):
 	pesos=np.subtract(pesos,alpha/mbatch*totales)
 	print(pesos)
 
+
+newValue= X_test
+poly2 = PolynomialFeatures(degree = grado)
+x_poly2 = poly2.fit_transform(newValue)
+#print(x_poly2[:,0:features])
+acumulado=0
+
+for i in range(7000):
+	
+	#print(i)
+	res=np.sum((np.multiply(x_poly2[i:i+1,0:features],pesos)))
+
+	resAct= Y_test[0]
+	dif=pow(res-resAct,2)
+	acumulado=acumulado+dif
+	if i < 10:
+		print("actual ")
+		print(resAct)
+		print("Predicho")
+		print(res)	
+	"""print("actual ")
+				print(resAct)
+				print("Predicho")
+				print(res)"""
+
+final=acumulado/7000
+print(final)
